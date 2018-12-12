@@ -139,3 +139,84 @@ public class UserAccountController {
  
 }
 ```
+
+# Handling Response
+Responses from the controller
+- `ModelAndView`
+- `@ResponseBody`
+
+**Response as an instance of ModelAndView**
+- Model : Map object to store key-value pair
+```aidl
+ @Controller
+    @RequestMapping("/account/*")
+    public class UserAccountController {
+ 
+      @PostMapping("/signup/process")
+      public ModelAndView processSignup(ModelMap model, @RequestParam("nickname")       String  nickname, @RequestParam("emailaddress") 
+      String emailAddress, @RequestParam("password") String password) {
+        model.addAttribute("login", true);
+        model.addAttribute("nickname", nickname);
+        model.addAttribute("message", "Have a great day ahead.");
+        return new ModelAndView("index", model);
+      }
+    }
+
+```
+
+**@ResponseBody Annotation**
+- `@ResponseBody` can be applied both at class level and the method level.
+- Class level : @RestController = @Controller + @ResponseBody
+- When the value returned is an object, the object is converted into an appropriate JSON or XML format by HttpMessageConverters. The format is decided based on the value of  the produce attribute of the @RequestMapping annotation, and also the type of content that the client accepts.
+```aidl
+@Controller
+    public class RestDemoController {
+ 
+      @RequestMapping(value="/hello", method=RequestMethod.POST, produces="application/json")
+      @ResponseBody
+      public HelloMessage getHelloMessage(@RequestBody User user) {
+        HelloMessage helloMessage = new HelloMessage();
+        String name = user.getName();
+        helloMessage.setMessage( "Hello " + name + "! How are you doing?");
+        helloMessage.setName(name);
+        return helloMessage;
+      }
+    }
+``` 
+
+# Restful Web Service
+e.g., 
+```aidl
+@RestController
+    public class DoctorSearchController {
+ 
+      @Autowired
+      DoctorService docService;
+ 
+      @RequestMapping(value="/doctors", method=RequestMethod.GET, 
+                      produces="application/json")
+      public DoctorList searchDoctor(
+             @RequestParam(value="location", required=false) String location,
+             @RequestParam(value="speciality", required=false) String speciality) 
+      {
+          DoctorList docList = docService.find(location, speciality);
+        return docList;
+      }
+    }
+```
+
+- Client Response
+```aidl
+[{
+     "id": "doc1",
+     "firstName": "Calvin",
+     "lastName": "Hobbes",
+     "specialityCode": "pediatrics"
+    },
+    {
+      "id": "doc2",
+      "firstName": "Susan",
+      "lastName": "Storm",
+      "specialityCode": "cardiology"
+    }]
+```
