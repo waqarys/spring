@@ -220,3 +220,11 @@ e.g.,
       "specialityCode": "cardiology"
     }]
 ```
+
+# Creating a maven project 
+```aidl
+mvn archetype:generate -DgroupId=com.healthapp 
+                           -DartifactId=HealthApp 
+                           -DarchetypeArtifactId=maven-archetype-quickstart 
+                           -DinteractiveMode=false
+```
